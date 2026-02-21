@@ -1267,6 +1267,22 @@
         .event-card.bengali .event-body > .detail-item .detail-icon {
             color: var(--coral);
         }
+        .error-message {
+            display: none;
+            background: linear-gradient(135deg, #E53935 0%, #C62828 100%);
+            color: white;
+            padding: 22px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.15rem;
+            margin-top: 25px;
+            animation: slideDown 0.5s ease;
+            box-shadow: 0 8px 25px rgba(229, 57, 53, 0.3);
+        }
+
+        .error-message.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -1601,6 +1617,9 @@
                 <div class="success-message" id="successMessage">
                     ✓ Thank you! Your RSVP has been received. We can't wait to celebrate with you!
                 </div>
+                <div class="error-message" id="errorMessage">
+                    ✗ Something went wrong. Please try again or contact us directly.
+                </div>
             </form>
         </div>
     </section>
@@ -1732,14 +1751,32 @@
         });
 
         form.addEventListener('submit', (e) => {
-            successMessage.classList.add('show');
             e.preventDefault();
-            setTimeout(() => {
-                form.reset();
-                eventSelection.style.display = 'none';
-                guestsGroup.style.display = 'none';
-                successMessage.classList.remove('show');
-            }, 4000);
+
+            const formData = new FormData(form);
+
+            fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(formData).toString(),
+            })
+            .then(() => {
+                successMessage.classList.add('show');
+                setTimeout(() => {
+                    form.reset();
+                    eventSelection.style.display = 'none';
+                    guestsGroup.style.display = 'none';
+                    successMessage.classList.remove('show');
+                }, 4000);
+            })
+            .catch((error) => {
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 4000);
+                console.error(error);
+            });
         });
 
         // Smooth scroll for navigation
