@@ -1301,6 +1301,30 @@
         .error-message.show {
             display: block;
         }
+
+        .venue-address a {
+            color: var(--accent-purple);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-purple);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .venue-address a:hover {
+            color: var(--deep-purple);
+            border-bottom-color: var(--deep-purple);
+            border-bottom-style: solid;
+        }
+
+        .event-card.bengali .venue-address a {
+            color: var(--coral);
+            border-bottom-color: var(--coral);
+        }
+
+        .event-card.bengali .venue-address a:hover {
+            color: var(--warm-orange);
+            border-bottom-color: var(--warm-orange);
+        }
     </style>
 </head>
 <body>
@@ -1446,7 +1470,7 @@
                     </div>
 
                     <div class="ceremony-item">
-                        <div class="ceremony-name">Shubho Bibah</div>
+                        <div class="ceremony-name">Shubho Bibaho</div>
                         <div class="ceremony-details">
                             <div class="detail-item">
                                 <svg class="detail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1466,10 +1490,10 @@
                             </svg>
                             Venue
                         </div>
-                        <div class="venue-address">
+                        <div class="venue-address"><a href="https://maps.app.goo.gl/VhLUbcv3wYueBedR9">
                             Community Hall, Herbertabad, 
                             <br>
-                            South Andaman
+                            South Andaman</a>
                         </div>
                     </div>
                 </div>
@@ -1514,7 +1538,7 @@
                                     <circle cx="12" cy="12" r="10"></circle>
                                     <polyline points="12 6 12 12 16 14"></polyline>
                                 </svg>
-                                <span>8:00 PM - Dance & Celebration</span>
+                                <span>7:00 PM - Music & Garba</span>
                             </div>
                         </div>
                     </div>
@@ -1548,9 +1572,9 @@
                             </svg>
                             Venue
                         </div>
-                        <div class="venue-address">
+                        <div class="venue-address"><a href="https://maps.app.goo.gl/pEcurvxoaMUguo7X7">
                             Uma Bhavan, Sojitra Road<br>
-                            Anand, Gujarat
+                            Anand, Gujarat</a>
                         </div>
                     </div>
                 </div>
@@ -1721,28 +1745,36 @@
     </div>
 
     <script>
-        // Countdown Timer
+            // Countdown Timer
         function updateCountdown() {
-            const weddingDate = new Date('May 7, 2026 10:00:00').getTime();
-            const now = new Date().getTime();
-            const distance = weddingDate - now;
+            const now = new Date();
+            const bengaliDate = new Date('May 7, 2026 18:30:00');
+            const gujaratiDate = new Date('May 24, 2026 11:30:00');
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Switch to Gujarati countdown after May 7 has passed
+            const switchDate = new Date('May 8, 2026 00:00:00');
+            const useGujarati = now >= switchDate;
 
-            document.getElementById('days').textContent = days;
-            document.getElementById('hours').textContent = hours;
-            document.getElementById('minutes').textContent = minutes;
-            document.getElementById('seconds').textContent = seconds;
+            const targetDate = useGujarati ? gujaratiDate : bengaliDate;
 
-            if (distance < 0) {
-                document.getElementById('days').textContent = '0';
-                document.getElementById('hours').textContent = '0';
-                document.getElementById('minutes').textContent = '0';
-                document.getElementById('seconds').textContent = '0';
+            // Update subtitle text
+            document.querySelector('.countdown-subtitle').textContent = useGujarati
+                ? 'Gujarati Wedding - May 24th, 2026'
+                : 'Bengali Wedding - May 7th, 2026';
+
+            const distance = targetDate.getTime() - now.getTime();
+
+            if (distance <= 0) {
+                ['days','hours','minutes','seconds'].forEach(id => {
+                    document.getElementById(id).textContent = '0';
+                });
+                return;
             }
+
+            document.getElementById('days').textContent    = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById('hours').textContent   = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('minutes').textContent = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('seconds').textContent = Math.floor((distance % (1000 * 60)) / 1000);
         }
 
         updateCountdown();
